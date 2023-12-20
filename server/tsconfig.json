@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"outDir": "../dist", // Assuming you want the output in a 'dist' folder one level up
+		"baseUrl": ".", // Set to the current folder
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"esModuleInterop": true
+	},
+	"include": ["**/*.ts"],
+	"exclude": ["node_modules"]
+}
