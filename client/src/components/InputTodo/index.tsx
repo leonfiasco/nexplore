@@ -4,21 +4,14 @@ import { Button, Form, Input } from 'antd';
 
 import styles from './style.module.scss';
 
-type FieldType = {
-	username?: string;
-	password?: string;
-	remember?: string;
-};
-
 const InputTodo = () => {
 	const [name, setName] = useState('');
 
 	const handleFormSubmit = async () => {
 		try {
-			const res = await axios.post('http://localhost:2402/todos/addTodo', {
+			await axios.post('http://localhost:2402/todos/addTodo', {
 				name,
 			});
-			console.log(res);
 		} catch (error) {
 			console.log(error);
 		}
@@ -29,7 +22,7 @@ const InputTodo = () => {
 			<h1 className={styles.title}>Todo List</h1>
 			<div className={styles.formWrap}>
 				<Form name='basic' className={styles.form} onFinish={handleFormSubmit}>
-					<Form.Item<FieldType>>
+					<Form.Item>
 						<Input
 							placeholder='Enter Todo'
 							value={name}
