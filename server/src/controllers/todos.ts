@@ -74,6 +74,7 @@ exports.delete_todo = async (
 ) => {
 	try {
 		const { id } = req.params;
+
 		await handleQuery('DELETE FROM todo WHERE todo_id = $1', [id]);
 		res.status(200).json({
 			message: 'Todo was successfully deleted',
