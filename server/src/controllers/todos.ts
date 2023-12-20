@@ -57,13 +57,26 @@ exports.edit_todo = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id } = req.params;
 		const { name } = req.body;
-		const editTodo = await handleQuery(
-			'UPDATE todo SET name = $1 WHERE todo_id = $2',
-			[name, id]
-		);
+		await handleQuery('UPDATE todo SET name = $1 WHERE todo_id = $2', [name, id]);
 
 		res.status(200).json({
 			message: 'todo was successfully update',
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.delete_todo = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { id } = req.params;
+		await handleQuery('DELETE FROM todo WHERE todo_id = $1', [id]);
+		res.status(200).json({
+			message: 'Todo was successfully deleted',
 		});
 	} catch (err) {
 		next(err);

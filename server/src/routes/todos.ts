@@ -11,4 +11,6 @@ router.get('/getTodo/:id', todosController.get_todo);
 
 router.put('/editTodo/:id', todosController.edit_todo);
 
+router.delete('/deleteTodo/:id', todosController.delete_todo);
+
 module.exports = router;
