@@ -9,4 +9,6 @@ router.get('/getTodos', todosController.get_all_todos);
 
 router.get('/getTodo/:id', todosController.get_todo);
 
+router.put('/editTodo/:id', todosController.edit_todo);
+
 module.exports = router;

@@ -9,7 +9,6 @@ const app = express();
 
 const todoRoutes = require('./routes/todos');
 
-//test comment
 app.use(compression());
 app.use(bodyParser.json());
 app.use(morgan('dev'));

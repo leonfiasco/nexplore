@@ -3,5 +3,5 @@ CREATE DATABASE nexploretodo
 
 CREATE TABLE todo(
 todo_id SERIAL PRIMARY KEY,
-description VARCHAR(255)
+name VARCHAR(255)
 )
