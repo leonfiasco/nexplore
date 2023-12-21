@@ -57,10 +57,24 @@ exports.edit_todo = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id } = req.params;
 		const { name } = req.body;
-		await handleQuery('UPDATE todo SET name = $1 WHERE todo_id = $2', [name, id]);
 
-		res.status(200).json({
-			message: 'todo was successfully updated',
+		// Update the todo
+		const updateResponse = await handleQuery(
+			'UPDATE todo SET name = $1 WHERE todo_id = $2 RETURNING *',
+			[name, id]
+		);
+
+		if (updateResponse.rows.length === 0) {
+			return res.status(404).json({ error: 'Todo not found' });
+		}
+
+		console.log(updateResponse);
+
+		const updatedTodo = updateResponse.rows[0];
+
+		return res.status(200).json({
+			message: 'Todo was successfully updated',
+			todo: updatedTodo,
 		});
 	} catch (err) {
 		next(err);

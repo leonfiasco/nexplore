@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input } from 'antd';
 
@@ -12,6 +12,7 @@ const InputTodo = () => {
 			await axios.post('http://localhost:2402/todos/addTodo', {
 				name,
 			});
+			window.location.reload();
 		} catch (error) {
 			console.log(error);
 		}
