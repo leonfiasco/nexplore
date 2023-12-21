@@ -10,18 +10,32 @@ import style from './style.module.scss';
 const ListTodos = () => {
 	const [todoList, setTodoList] = useState<Duty[]>([]);
 
+	const getTodos = async () => {
+		try {
+			const res = await axios.get('http://localhost:2402/todos/getTodos');
+			if (Array.isArray(res.data)) {
+				const todosWithKey = res.data.map((todo: Duty) => ({
+					...todo,
+					key: todo.todo_id,
+				}));
+				setTodoList(todosWithKey);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		getTodos();
 	}, []);
 
 	const columns: ColumnsType<Duty> = [
 		{
-			title: 'Name',
-			dataIndex: 'name',
-			key: 'name',
+			title: 'Description',
+			dataIndex: 'description',
+			key: 'description',
 			render: (text) => <h4>{text}</h4>,
 		},
-
 		{
 			title: 'Action',
 			key: 'action',
@@ -35,7 +49,6 @@ const ListTodos = () => {
 					>
 						<EditTodo key={record.todo_id} todo={record} />
 					</Button>
-
 					<Button
 						type='primary'
 						danger
@@ -51,23 +64,12 @@ const ListTodos = () => {
 		},
 	];
 
-	const getTodos = async () => {
-		try {
-			const res = await axios.get('http://localhost:2402/todos/getTodos');
-			const todosWithKey = res.data.map((todo: Duty) => ({
-				...todo,
-				key: todo.todo_id,
-			}));
-			setTodoList(todosWithKey);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	const handleDelete = async (todoId: string) => {
 		try {
 			await axios.delete(`http://localhost:2402/todos/deleteTodo/${todoId}`);
-			setTodoList(todoList.filter((todo) => todo.todo_id !== todoId));
+			setTodoList((prevTodoList) =>
+				prevTodoList.filter((todo) => todo.todo_id !== todoId)
+			);
 		} catch (error) {
 			console.log(error);
 		}

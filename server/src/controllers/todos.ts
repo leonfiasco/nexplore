@@ -7,13 +7,13 @@ const handleQuery = async (query: string, value?: string[]) => {
 
 exports.add_todo = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { name } = req.body;
-		if (!name) {
+		const { description } = req.body;
+		if (!description) {
 			return res.status(400).send({ err: 'Please enter todo description' });
 		}
 		const newTodo = await handleQuery(
-			'INSERT INTO todo (name) VALUES($1) RETURNING *',
-			[name]
+			'INSERT INTO todo (description) VALUES($1) RETURNING *',
+			[description]
 		);
 		res.status(200).json(newTodo.rows);
 	} catch (err) {
@@ -29,7 +29,7 @@ exports.get_all_todos = async (
 	try {
 		const allTodos = await handleQuery('SELECT * FROM todo');
 		if (!allTodos.rows.length) {
-			res.status(400).send({ err: 'Please add a todo' });
+			return res.status(200).json({ message: 'No todos found' });
 		}
 		res.status(200).json(allTodos.rows);
 	} catch (err) {
@@ -56,19 +56,16 @@ exports.get_todo = async (req: Request, res: Response, next: NextFunction) => {
 exports.edit_todo = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id } = req.params;
-		const { name } = req.body;
+		const { description } = req.body;
 
-		// Update the todo
 		const updateResponse = await handleQuery(
-			'UPDATE todo SET name = $1 WHERE todo_id = $2 RETURNING *',
-			[name, id]
+			'UPDATE todo SET description = $1 WHERE todo_id = $2 RETURNING *',
+			[description, id]
 		);
 
 		if (updateResponse.rows.length === 0) {
 			return res.status(404).json({ error: 'Todo not found' });
 		}
-
-		console.log(updateResponse);
 
 		const updatedTodo = updateResponse.rows[0];
 

@@ -10,7 +10,7 @@ type props = {
 const EditTodo = ({ todo }: props) => {
 	const [open, setOpen] = useState(false);
 	const [confirmLoading, setConfirmLoading] = useState(false);
-	const [description, setDescription] = useState(todo.name);
+	const [description, setDescription] = useState(todo.description);
 
 	const showModal = () => {
 		setOpen(true);
@@ -20,7 +20,7 @@ const EditTodo = ({ todo }: props) => {
 		try {
 			const res = await axios.put(
 				`http://localhost:2402/todos/editTodo/${todo.todo_id}`,
-				{ name: description }
+				{ description: description }
 			);
 			if (res.status === 200) {
 				window.location.reload();
@@ -33,14 +33,13 @@ const EditTodo = ({ todo }: props) => {
 	const handleOk = () => {
 		setConfirmLoading(true);
 		editDescription();
-		setTimeout(() => {
-			setOpen(false);
-			setConfirmLoading(false);
-		}, 2000);
+		setOpen(false);
+		setConfirmLoading(false);
 	};
 
 	const handleCancel = () => {
 		setOpen(false);
+		setDescription(todo.description);
 	};
 
 	return (
@@ -58,7 +57,6 @@ const EditTodo = ({ todo }: props) => {
 					value={`${description}`}
 					onChange={(e) => setDescription(e.target.value)}
 				/>
-				;
 			</Modal>
 		</>
 	);

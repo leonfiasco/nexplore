@@ -5,14 +5,23 @@ import { Button, Form, Input } from 'antd';
 import styles from './style.module.scss';
 
 const InputTodo = () => {
-	const [name, setName] = useState('');
+	const [description, setDescription] = useState('');
+	const [error, setError] = useState<string | null>(null);
 
 	const handleFormSubmit = async () => {
 		try {
+			if (!description.trim()) {
+				setError('Please enter a todo description');
+				return;
+			}
+
 			await axios.post('http://localhost:2402/todos/addTodo', {
-				name,
+				description,
 			});
+
 			window.location.reload();
+			setDescription('');
+			setError(null);
 		} catch (error) {
 			console.log(error);
 		}
@@ -26,9 +35,10 @@ const InputTodo = () => {
 					<Form.Item>
 						<Input
 							placeholder='Enter Todo'
-							value={name}
-							onChange={(e) => setName(e.target.value)}
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
 						/>
+						{error && <div className={styles.error}>{error}</div>}
 					</Form.Item>
 					<Form.Item wrapperCol={{ offset: 22, span: 16 }}>
 						<Button

@@ -5,6 +5,12 @@
 		max-width: 1200px;
 		.form {
 			width: 100%;
+			.error {
+				color: red;
+				float: left;
+				padding-top: 15px;
+				font-size: 15px;
+			}
 			.btn {
 				background-color: #1db954;
 			}
