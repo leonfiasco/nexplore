@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import InputTodo from './components/InputTodo';
 import ListTodos from './components/ListTodos';
 

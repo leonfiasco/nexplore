@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Input } from 'antd';
 
 import styles from './style.module.scss';
 
 const InputTodo = () => {
 	const [description, setDescription] = useState('');
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState('');
 
 	const handleFormSubmit = async () => {
 		try {
@@ -21,7 +20,7 @@ const InputTodo = () => {
 
 			window.location.reload();
 			setDescription('');
-			setError(null);
+			setError('');
 		} catch (error) {
 			console.log(error);
 		}
@@ -31,26 +30,16 @@ const InputTodo = () => {
 		<div className={styles.inputContainer}>
 			<h1 className={styles.title}>Todo List</h1>
 			<div className={styles.formWrap}>
-				<Form name='basic' className={styles.form} onFinish={handleFormSubmit}>
-					<Form.Item>
-						<Input
-							placeholder='Enter Todo'
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-						/>
-						{error && <div className={styles.error}>{error}</div>}
-					</Form.Item>
-					<Form.Item wrapperCol={{ offset: 22, span: 16 }}>
-						<Button
-							type='primary'
-							htmlType='submit'
-							size='large'
-							className={styles.btn}
-						>
-							Add
-						</Button>
-					</Form.Item>
-				</Form>
+				<form name='basic' className={styles.form} onSubmit={handleFormSubmit}>
+					<input
+						placeholder='Enter Todo'
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+					/>
+					{error && <div className={styles.error}>{error}</div>}
+
+					<button className={styles.btn}>Add</button>
+				</form>
 			</div>
 		</div>
 	);
