@@ -90,13 +90,41 @@ const ListTodos = ({ todoList, setTodoList }: props) => {
 			{!todoList.length ? (
 				<h1>Add a todo</h1>
 			) : (
-				<Table
-					columns={columns}
-					dataSource={sortedTodoList}
-					pagination={{
-						pageSize: 5,
-					}}
-				/>
+				<table className={style.table}>
+					<thead>
+						<tr>
+							<th>Description</th>
+							<th>Action</th>
+							<th>Completed</th>
+						</tr>
+					</thead>
+					<tbody>
+						{sortedTodoList.map((todo) => (
+							<tr key={todo.todo_id}>
+								<td>
+									<h3>{todo.description}</h3>
+								</td>
+								<td>
+									<div className={style.buttonGroup}>
+										<button type='button' className={`${style.editBtn} ${style.button}`}>
+											<EditTodo key={todo.todo_id} todo={todo} />
+										</button>
+										<button
+											type='button'
+											className={`${style.deleteBtn} ${style.button}`}
+											onClick={() => handleDelete(todo.todo_id)}
+										>
+											Delete
+										</button>
+									</div>
+								</td>
+								<td>
+									<input type='checkbox' name='completed-todo' id='' />
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 			)}
 		</>
 	);

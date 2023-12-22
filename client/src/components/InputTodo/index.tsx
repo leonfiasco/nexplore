@@ -29,8 +29,6 @@ const InputTodo = ({ handleAddTodo }: props) => {
 				setError('');
 			}
 		} catch (error) {
-			console.log(error);
-
 			setError('An error occurred while adding the todo.');
 		}
 	};
@@ -45,6 +43,7 @@ const InputTodo = ({ handleAddTodo }: props) => {
 					onSubmit={(e) => handleFormSubmit(e)}
 				>
 					<input
+						className={styles.input}
 						placeholder='Enter Todo'
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
