@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
 import { Space, Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -7,9 +7,12 @@ import { Duty } from '../../types';
 
 import style from './style.module.scss';
 
-const ListTodos = () => {
-	const [todoList, setTodoList] = useState<Duty[]>([]);
+type props = {
+	todoList: Duty[];
+	setTodoList: Dispatch<SetStateAction<Duty[]>>;
+};
 
+const ListTodos = ({ todoList, setTodoList }: props) => {
 	const getTodos = async () => {
 		try {
 			const res = await axios.get('http://localhost:2402/todos/getTodos');
@@ -67,13 +70,20 @@ const ListTodos = () => {
 	const handleDelete = async (todoId: string) => {
 		try {
 			await axios.delete(`http://localhost:2402/todos/deleteTodo/${todoId}`);
-			setTodoList((prevTodoList) =>
-				prevTodoList.filter((todo) => todo.todo_id !== todoId)
+			setTodoList((prevTodoList: Duty[]) =>
+				prevTodoList.filter((todo: Duty) => todo.todo_id !== todoId)
 			);
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	const sortedTodoList = todoList.sort((todoA, todoB) => {
+		const idA = Number(todoA.todo_id);
+		const idB = Number(todoB.todo_id);
+
+		return idB - idA;
+	});
 
 	return (
 		<>
@@ -82,7 +92,7 @@ const ListTodos = () => {
 			) : (
 				<Table
 					columns={columns}
-					dataSource={todoList}
+					dataSource={sortedTodoList}
 					pagination={{
 						pageSize: 5,
 					}}

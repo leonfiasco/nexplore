@@ -15,7 +15,7 @@ exports.add_todo = async (req: Request, res: Response, next: NextFunction) => {
 			'INSERT INTO todo (description) VALUES($1) RETURNING *',
 			[description]
 		);
-		res.status(200).json(newTodo.rows);
+		res.status(200).json(newTodo.rows[0]);
 	} catch (err) {
 		next(err);
 	}

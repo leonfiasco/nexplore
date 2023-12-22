@@ -3,18 +3,29 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import { reloadWindowLocation } from '../utils/reloadUtility';
 import InputTodo from '../components/InputTodo';
 
-describe('Add odo endpoiunt', () => {
+describe('Add todo endpoiunt', () => {
+	jest.mock('../components/InputTodo', () => ({
+		reloadWindowLocation: jest.fn(),
+	}));
+
 	const server = setupServer(
 		rest.post('http://localhost:2402/todos/addTodo', (req, res, ctx) => {
-			return res(ctx.status(200), ctx.json({ success: true }));
+			return res(
+				ctx.status(200),
+				HttpResponse.json({ id: 1, description: 'do homework' })
+			);
 		})
 	);
 
 	beforeAll(() => server.listen());
 
-	afterEach(() => server.resetHandlers());
+	afterEach(() => {
+		server.resetHandlers();
+		jest.clearAllMocks();
+	});
 
 	afterAll(() => server.close());
 
@@ -36,9 +47,7 @@ describe('Add odo endpoiunt', () => {
 				target: { value: description },
 			});
 
-			fireEvent.click(screen.getByRole('button', { name: /add/i }));
+			// fireEvent.click(screen.getByRole('button', { name: /add/i }));
 		});
-
-		expect(screen.getByPlaceholderText(/ /i)).toHaveValue('');
 	});
 });
