@@ -1,53 +1,77 @@
-jest.mock('antd/lib/_util/responsiveObserver');
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { reloadWindowLocation } from '../utils/reloadUtility';
 import InputTodo from '../components/InputTodo';
+import userEvent from '@testing-library/user-event';
 
 describe('Add todo endpoiunt', () => {
-	jest.mock('../components/InputTodo', () => ({
-		reloadWindowLocation: jest.fn(),
-	}));
-
 	const server = setupServer(
 		rest.post('http://localhost:2402/todos/addTodo', (req, res, ctx) => {
-			return res(
-				ctx.status(200),
-				HttpResponse.json({ id: 1, description: 'do homework' })
-			);
+			return res(ctx.status(200), ctx.json({ status: 200, todo: 'eat food' }));
 		})
 	);
 
 	beforeAll(() => server.listen());
 
-	afterEach(() => {
-		server.resetHandlers();
-		jest.clearAllMocks();
-	});
-
 	afterAll(() => server.close());
 
-	describe('button should render correctly', () => {
-		test('should render the add button', async () => {
-			render(<InputTodo />);
-
-			const addBtn = await screen.findByRole('button', { name: /add/i });
-			expect(addBtn).toBeTruthy();
-		});
+	afterEach(() => {
+		server.resetHandlers();
 	});
 
-	test('should be able to add a todo', async () => {
-		render(<InputTodo />);
-		const description = 'do homework';
+	test('should render the add button', async () => {
+		render(<InputTodo handleAddTodo={jest.fn()} />);
 
-		await act(async () => {
-			fireEvent.change(screen.getByPlaceholderText(/Enter todo/i), {
-				target: { value: description },
-			});
+		const addBtn = await screen.findByRole('button', { name: /add/i });
+		expect(addBtn).toBeTruthy();
+	});
+	test('should render the add button and click add button', async () => {
+		render(<InputTodo handleAddTodo={jest.fn()} />);
 
-			// fireEvent.click(screen.getByRole('button', { name: /add/i }));
-		});
+		const inputField = screen.getByPlaceholderText('Enter Todo');
+
+		userEvent.type(inputField, 'New Todo');
+
+		fireEvent.change(inputField, { target: { value: 'New Todo' } });
+
+		expect(inputField).toHaveValue('New Todo');
+
+		const addBtn = await screen.findByRole('button', { name: /add/i });
+		fireEvent.click(addBtn);
+	});
+	// });
+
+	test('should render the add button and click add button for failure response', async () => {
+		server.use(
+			rest.post('http://localhost:2402/todos/addTodo', (req, res, ctx) => {
+				return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
+			})
+		);
+
+		render(<InputTodo handleAddTodo={jest.fn()} />);
+
+		const inputField = screen.getByPlaceholderText('Enter Todo');
+
+		userEvent.type(inputField, 'New Todo');
+
+		fireEvent.change(inputField, { target: { value: 'New Todo2' } });
+
+		expect(inputField).toHaveValue('New Todo2');
+
+		const addBtn = await screen.findByRole('button', { name: /add/i });
+		fireEvent.click(addBtn);
+	});
+
+	test('should not add a todo on empty form submission', async () => {
+		render(<InputTodo handleAddTodo={jest.fn()} />);
+
+		await fireEvent.click(screen.getByRole('button', { name: /add/i }));
+
+		const getErrorMsg = await screen.findByText(
+			/please enter a todo description/i
+		);
+
+		expect(getErrorMsg).toBeTruthy();
 	});
 });

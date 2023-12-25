@@ -1,7 +1,5 @@
-import React, { useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
-import { Space, Table, Button } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import EditTodo from '../EditTodo';
 import { Duty } from '../../types';
 
@@ -12,8 +10,9 @@ type props = {
 	setTodoList: Dispatch<SetStateAction<Duty[]>>;
 };
 
-const ListTodos = ({ todoList, setTodoList }: props) => {
-	const getTodos = async () => {
+export const getTodos = (setTodoList: Dispatch<SetStateAction<Duty[]>>) => {
+	// eslint-disable-next-line no-async-promise-executor
+	return new Promise<void>(async (resolve, reject) => {
 		try {
 			const res = await axios.get('http://localhost:2402/todos/getTodos');
 			if (Array.isArray(res.data)) {
@@ -22,60 +21,43 @@ const ListTodos = ({ todoList, setTodoList }: props) => {
 					key: todo.todo_id,
 				}));
 				setTodoList(todosWithKey);
+				resolve();
 			}
 		} catch (error) {
 			console.log(error);
+			reject(error);
 		}
-	};
+	});
+};
+
+export const handleDelete = async (
+	todoId: string,
+	setTodoList: Dispatch<SetStateAction<Duty[]>>
+) => {
+	try {
+		await axios.delete(`http://localhost:2402/todos/deleteTodo/${todoId}`);
+		setTodoList((prevTodoList: Duty[]) =>
+			prevTodoList.filter((todo: Duty) => todo.todo_id !== todoId)
+		);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const ListTodos = ({ todoList, setTodoList }: props) => {
+	const [completedStatus, setCompletedStatus] = useState<{
+		[key: string]: boolean;
+	}>({});
 
 	useEffect(() => {
-		getTodos();
-	}, []);
+		getTodos(setTodoList);
+	}, [setTodoList]);
 
-	const columns: ColumnsType<Duty> = [
-		{
-			title: 'Description',
-			dataIndex: 'description',
-			key: 'description',
-			render: (text) => <h4>{text}</h4>,
-		},
-		{
-			title: 'Action',
-			key: 'action',
-			render: (record) => (
-				<Space size='middle'>
-					<Button
-						type='primary'
-						htmlType='submit'
-						size='small'
-						className={style.editBtn}
-					>
-						<EditTodo key={record.todo_id} todo={record} />
-					</Button>
-					<Button
-						type='primary'
-						danger
-						htmlType='submit'
-						size='small'
-						onClick={() => handleDelete(record.todo_id)}
-						className={style.deleteBtn}
-					>
-						Delete
-					</Button>
-				</Space>
-			),
-		},
-	];
-
-	const handleDelete = async (todoId: string) => {
-		try {
-			await axios.delete(`http://localhost:2402/todos/deleteTodo/${todoId}`);
-			setTodoList((prevTodoList: Duty[]) =>
-				prevTodoList.filter((todo: Duty) => todo.todo_id !== todoId)
-			);
-		} catch (error) {
-			console.log(error);
-		}
+	const handleComplete = (id: string) => {
+		setCompletedStatus((prevStatus) => ({
+			...prevStatus,
+			[id]: !prevStatus[id],
+		}));
 	};
 
 	const sortedTodoList = todoList.sort((todoA, todoB) => {
@@ -102,7 +84,9 @@ const ListTodos = ({ todoList, setTodoList }: props) => {
 						{sortedTodoList.map((todo) => (
 							<tr key={todo.todo_id}>
 								<td>
-									<h3>{todo.description}</h3>
+									<h3 className={`${completedStatus[todo.todo_id] && style.completed}`}>
+										{todo.description}
+									</h3>
 								</td>
 								<td>
 									<div className={style.buttonGroup}>
@@ -112,14 +96,20 @@ const ListTodos = ({ todoList, setTodoList }: props) => {
 										<button
 											type='button'
 											className={`${style.deleteBtn} ${style.button}`}
-											onClick={() => handleDelete(todo.todo_id)}
+											onClick={() => handleDelete(todo.todo_id, setTodoList)}
 										>
 											Delete
 										</button>
 									</div>
 								</td>
 								<td>
-									<input type='checkbox' name='completed-todo' id='' />
+									<input
+										type='checkbox'
+										name='completed-todo'
+										className={style.checkbox}
+										checked={completedStatus[todo.todo_id] || false}
+										onChange={() => handleComplete(todo.todo_id)}
+									/>
 								</td>
 							</tr>
 						))}

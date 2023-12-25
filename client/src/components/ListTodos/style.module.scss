@@ -34,6 +34,31 @@
 
 	td {
 		text-transform: capitalize;
+
+		.completed {
+			text-decoration: line-through;
+		}
+
+		.editBtn,
+		.deleteBtn {
+			cursor: pointer;
+			border: none;
+			border-radius: 6px;
+			color: white;
+			height: 25px;
+			width: 60px;
+		}
+		.editBtn {
+			background-color: dodgerblue;
+		}
+		.deleteBtn {
+			background-color: red;
+			margin-left: 15px;
+		}
+
+		.checkbox {
+			cursor: pointer;
+		}
 	}
 
 	th,

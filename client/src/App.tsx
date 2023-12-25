@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import './App.scss';
 import InputTodo from './components/InputTodo';
 import ListTodos from './components/ListTodos';
 import { Duty } from './types';
+
+import './App.scss';
 
 function App() {
 	const [todoList, setTodoList] = useState<Duty[]>([]);

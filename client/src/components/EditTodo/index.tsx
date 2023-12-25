@@ -26,7 +26,7 @@ const EditTodo = ({ todo }: props) => {
 				window.location.reload();
 			}
 		} catch (error) {
-			console.log(error);
+			console.log('===>', error);
 		}
 	};
 
@@ -55,6 +55,7 @@ const EditTodo = ({ todo }: props) => {
 			>
 				<Input
 					value={`${description}`}
+					data-testid='myinput'
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 			</Modal>
