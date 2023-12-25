@@ -87,9 +87,11 @@ Technologies Used
 Backend:
 
 - Node.js
+- Typescript
 - Express.js
 - Postgres
 
 Frontend:
 
 - React
+- Typescript
