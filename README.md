@@ -1,8 +1,9 @@
 ### Nexplore
 
 Getting Started
+
 Backend
-Navigate to the server folder:g
+Navigate to the server folder:
 
 Install the required packages:
 
@@ -24,6 +25,13 @@ yarn start
 ```
 
 Frontend
+
+Navigate out of server folder:
+
+```sh
+cd ..
+```
+
 Navigate to the client folder:
 
 ```sh
