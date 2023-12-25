@@ -36,14 +36,6 @@ describe('todos should render correctly', () => {
 			expect(todoElement).toBeInTheDocument();
 		}
 		screen.debug();
-		// Find the checkbox using its name
-		// const checkboxes = screen.getAllByRole('checkbox', { name: 'completed-todo' });
-
-		// // Assert that the checkbox is checked based on the completedStatus
-		// expect(checkboxes[1]).toBeChecked();
-
-		// // Simulate a change in the checkbox state
-		// fireEvent.change(checkboxes[1]);
 	});
 
 	test('should render todos and delete a todo', async () => {
@@ -112,7 +104,6 @@ describe('todos should render correctly', () => {
 	});
 
 	test('handles failed todo items list fetch', async () => {
-		// Set up a different handler for a failed response
 		server.use(
 			rest.get('http://localhost:2402/todos/getTodos', (req, res, ctx) => {
 				return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
@@ -120,12 +111,5 @@ describe('todos should render correctly', () => {
 		);
 
 		render(<ListTodos todoList={[]} setTodoList={jest.fn} />);
-
-		// Your test logic here to handle the failed response
-
-		// Ensure that the component handles the failed fetch appropriately
-		// await waitFor(() => {
-		// Your assertions here
-		// });
 	});
 });
