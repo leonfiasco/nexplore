@@ -2,6 +2,29 @@
 
 Getting Started
 
+Create a database called
+
+```sh
+createdb nexploretodo
+```
+
+Configure database connection
+
+```sh
+// db.ts
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  user: 'theirusername',
+  password: 'theirpassword',
+  host: 'localhost',
+  port: 5432,
+  database: 'nexploretodo',
+});
+
+export default pool;
+```
+
 Backend
 Navigate to the server folder:
 
@@ -54,6 +77,8 @@ yarn run dev
 ## Project Structure
 
 The project is organized into two main components:
+
+For the purpose of being able to create a database I've left the db info visible but in a production app i would store these values in a .env file
 
 server: Contains the backend code.
 client: Contains the frontend code.
