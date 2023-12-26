@@ -2,8 +2,8 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"moduleResolution": "node",
-		"outDir": "../dist", // Assuming you want the output in a 'dist' folder one level up
-		"baseUrl": ".", // Set to the current folder
+		"outDir": "../dist", 
+		"baseUrl": ".", 
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"esModuleInterop": true
